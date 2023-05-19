@@ -1,23 +1,22 @@
 package ru.borisov.phrase.util;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.borisov.phrase.domain.constant.Code;
 import ru.borisov.phrase.domain.response.exception.CommonException;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import java.util.Set;
 
-@Slf4j
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class ValidationUtils {
 
     private final Validator validator;
-
 
 
     public <T> void validationRequest(T req) {

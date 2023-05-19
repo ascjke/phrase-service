@@ -2,12 +2,12 @@ package ru.borisov.phrase.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Slf4j
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("phrase-service-public/search")

@@ -23,7 +23,7 @@
 
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="ru.borisov.gritter" level="debug" additivity="false">
+        <Logger name="ru.borisov.phrase" level="debug" additivity="false">
             <AppenderRef ref="LogToRollingRandomAccessFile"/>
             <AppenderRef ref="LogToConsole"/>
         </Logger>

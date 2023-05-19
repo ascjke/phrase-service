@@ -1,6 +1,7 @@
 package ru.borisov.phrase.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,10 @@ import ru.borisov.phrase.domain.entity.Phrase;
 import ru.borisov.phrase.domain.entity.PhraseRowMapper;
 import ru.borisov.phrase.domain.response.exception.CommonException;
 
-import jakarta.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Repository
 @Transactional
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
@@ -31,12 +31,10 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
     private JdbcTemplate jdbcTemplate;
 
 
-
     @PostConstruct
     private void initialize() {
         setDataSource(dataSource);
     }
-
 
 
     @Override
@@ -46,12 +44,10 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
     }
 
 
-
     @Override
     public List<Phrase> getPhrasesByUserId(long userId) {
         return jdbcTemplate.query("SELECT * FROM phrase WHERE user_id = ? ORDER BY time_insert DESC;", new PhraseRowMapper(), userId);
     }
-
 
 
     @Override
@@ -61,13 +57,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
     }
 
 
-
     @Override
     public void addTag(String tag) {
 
         jdbcTemplate.update("INSERT INTO tag(text) SELECT DISTINCT LOWER(?) FROM tag WHERE NOT EXISTS (SELECT text FROM tag WHERE text = LOWER(?));", tag, tag);
     }
-
 
 
     @Override
@@ -76,7 +70,6 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
         jdbcTemplate.update("INSERT INTO phrase(user_id,text) VALUES (?,?);", userId, text);
         return jdbcTemplate.queryForObject("SELECT id FROM phrase WHERE id = LAST_INSERT_ID();", Long.class);
     }
-
 
 
     @Override
@@ -89,7 +82,6 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
             throw CommonException.builder().code(Code.AUTHORIZATION_ERROR).userMessage("Ошибка авторизации").httpStatus(HttpStatus.BAD_REQUEST).build();
         }
     }
-
 
 
     @Override
@@ -105,13 +97,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
     }
 
 
-
     @Override
     public boolean isExistsNickname(String nickname) {
 
         return jdbcTemplate.queryForObject("SELECT EXISTS (SELECT * FROM user WHERE nickname = ?);", Integer.class, nickname) != 0;
     }
-
 
 
     @Override

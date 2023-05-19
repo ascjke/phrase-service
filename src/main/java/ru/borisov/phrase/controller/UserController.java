@@ -2,7 +2,7 @@ package ru.borisov.phrase.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.borisov.phrase.domain.api.user.login.LoginReq;
@@ -12,7 +12,7 @@ import ru.borisov.phrase.domain.response.Response;
 import ru.borisov.phrase.service.UserService;
 
 
-@Slf4j
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("phrase-service-public/user")

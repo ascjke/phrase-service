@@ -2,25 +2,25 @@ package ru.borisov.phrase.filter;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.borisov.phrase.domain.constant.Code;
 import ru.borisov.phrase.domain.response.error.Error;
 import ru.borisov.phrase.domain.response.error.ErrorResponse;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Slf4j
+@Log4j2
 public class AuthorizationFilter extends OncePerRequestFilter {
 
-
+    // ControllerAdvice отрабатывает после doFilterInternal(), поэтому исключения тут не ловим
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -33,8 +33,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                             .userMessage("Ошибка авторизации, выброшенная из фильтра")
                             .build())
                     .build();
-            log.info("Отсутствует header AccessToken. ErrorResponse: {}", errorResponse);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+            log.error("Отсутствует header AccessToken. ErrorResponse: {}", errorResponse);
+            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse)); // write Error to response
             response.setStatus(BAD_REQUEST.value());
             response.setHeader("Content-Type", "application/json;charset=UTF-8");
             return;

@@ -1,14 +1,11 @@
 package ru.borisov.phrase.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.borisov.phrase.dao.UserDao;
-import ru.borisov.phrase.domain.response.exception.CommonException;
-import ru.borisov.phrase.util.EncryptUtils;
-import ru.borisov.phrase.util.ValidationUtils;
 import ru.borisov.phrase.domain.api.user.getMyPhrases.GetMyPhrasesResp;
 import ru.borisov.phrase.domain.api.user.getMyPhrases.PhraseResp;
 import ru.borisov.phrase.domain.api.user.login.LoginReq;
@@ -21,13 +18,16 @@ import ru.borisov.phrase.domain.dto.User;
 import ru.borisov.phrase.domain.entity.Phrase;
 import ru.borisov.phrase.domain.response.Response;
 import ru.borisov.phrase.domain.response.SuccessResponse;
+import ru.borisov.phrase.domain.response.exception.CommonException;
 import ru.borisov.phrase.service.UserService;
+import ru.borisov.phrase.util.EncryptUtils;
+import ru.borisov.phrase.util.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
     private final ValidationUtils validationUtils;
     private final EncryptUtils encryptUtils;
     private final UserDao userDao;
-
 
 
     @Override
@@ -57,7 +56,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public ResponseEntity<Response> publicPhrase(PublicPhraseReq req, String accessToken) {
 
@@ -76,7 +74,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public ResponseEntity<Response> login(LoginReq req) {
 
@@ -86,7 +83,6 @@ public class UserServiceImpl implements UserService {
         String accessToken = userDao.getAccessToken(User.builder().nickname(req.getAuthorization().getNickname()).encryptPassword(encryptPassword).build());
         return new ResponseEntity<>(SuccessResponse.builder().data(LoginResp.builder().accessToken(accessToken).build()).build(), HttpStatus.OK);
     }
-
 
 
     @Override
