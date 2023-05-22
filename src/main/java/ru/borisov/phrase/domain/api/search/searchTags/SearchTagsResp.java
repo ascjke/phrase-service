@@ -1,4 +1,4 @@
-package ru.borisov.phrase.domain.api.user.getMyPhrases;
+package ru.borisov.phrase.domain.api.search.searchTags;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhraseResp {
+public class SearchTagsResp {
 
-    private long phraseId;
-    private String text;
-    private String timeInsert;
     private List<TagResp> tags;
 }

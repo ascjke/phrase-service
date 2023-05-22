@@ -5,7 +5,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.borisov.phrase.dao.CommonDao;
 import ru.borisov.phrase.dao.UserDao;
+import ru.borisov.phrase.domain.api.common.TagResp;
 import ru.borisov.phrase.domain.api.user.getMyPhrases.GetMyPhrasesResp;
 import ru.borisov.phrase.domain.api.user.getMyPhrases.PhraseResp;
 import ru.borisov.phrase.domain.api.user.login.LoginReq;
@@ -35,19 +37,20 @@ public class UserServiceImpl implements UserService {
     private final ValidationUtils validationUtils;
     private final EncryptUtils encryptUtils;
     private final UserDao userDao;
+    private final CommonDao commonDao;
 
 
     @Override
     public ResponseEntity<Response> getMyPhrases(String accessToken) {
 
-        long userId = userDao.getUserIdByToken(accessToken);
+        long userId = commonDao.getUserIdByToken(accessToken);
         List<Phrase> phraseList = userDao.getPhrasesByUserId(userId);
 
         List<PhraseResp> phraseRespList = new ArrayList<>();
         for (Phrase phrase : phraseList) {
-            List<String> tags = userDao.getTagsByPhraseId(phrase.getId());
+            List<TagResp> tags = commonDao.getTagsByPhraseId(phrase.getId());
             phraseRespList.add(PhraseResp.builder()
-                    .id(phrase.getId())
+                    .phraseId(phrase.getId())
                     .text(phrase.getText())
                     .timeInsert(phrase.getTimeInsert())
                     .tags(tags).build());
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
         validationUtils.validationRequest(req);
 
-        long userId = userDao.getUserIdByToken(accessToken);
+        long userId = commonDao.getUserIdByToken(accessToken);
         long phraseId = userDao.addPhrase(userId, req.getText());
         log.info("userId: {}, phraseId: {}", userId, phraseId);
 

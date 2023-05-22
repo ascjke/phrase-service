@@ -16,10 +16,10 @@ import jakarta.validation.constraints.Pattern;
 public class AuthorizationReq {
 
     @NotBlank(message = "nickname должен быть заполнен")
-    @Pattern(regexp = RegExp.nickname, message = "Некорректный nickname")
+    @Pattern(regexp = RegExp.NICKNAME, message = "Некорректный nickname")
     private String nickname;
 
     @NotBlank(message = "password должен быть заполнен")
-    @Pattern(regexp = RegExp.password, message = "Некорректный password")
+    @Pattern(regexp = RegExp.PASSWORD, message = "Некорректный password")
     private String password;
 }

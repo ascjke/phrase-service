@@ -18,12 +18,12 @@ import java.util.List;
 public class PublicPhraseReq {
 
     @NotBlank(message = "text должен быть заполнен")
-    @Pattern(regexp = RegExp.phrase, message = "Некорректный text")
+    @Pattern(regexp = RegExp.PHRASE, message = "Некорректный text")
     private String text;
 
     @Size(max = 5, message = "Количество тегов не должно превышать 5")
     private List<
             @NotBlank(message = "tag должен быть заполнен")
-            @Pattern(regexp = RegExp.tag, message = "Некорректный tag")
+            @Pattern(regexp = RegExp.TAG, message = "Некорректный tag")
                     String> tags;
 }
