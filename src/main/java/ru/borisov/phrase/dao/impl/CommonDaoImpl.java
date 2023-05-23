@@ -38,7 +38,8 @@ public class CommonDaoImpl extends JdbcDaoSupport implements CommonDao {
     @Override
     public List<TagResp> getTagsByPhraseId(long phraseId) {
 
-        return jdbcTemplate.query("SELECT text, id FROM tag WHERE id IN (SELECT tag_id FROM phrase_tag WHERE phrase_id = ?);", new TagRespRowMapper(), phraseId);
+        return jdbcTemplate.query("SELECT text, id FROM tag WHERE id IN (SELECT tag_id FROM phrase_tag WHERE phrase_id = ?);",
+                new TagRespRowMapper(), phraseId);
     }
 
     @Override
@@ -48,7 +49,11 @@ public class CommonDaoImpl extends JdbcDaoSupport implements CommonDao {
             return jdbcTemplate.queryForObject("SELECT id FROM user WHERE access_token = ?;", Long.class, accessToken);
         } catch (EmptyResultDataAccessException ex) {
             log.error(ex.toString());
-            throw CommonException.builder().code(Code.AUTHORIZATION_ERROR).userMessage("Ошибка авторизации").httpStatus(HttpStatus.BAD_REQUEST).build();
+            throw CommonException.builder()
+                    .code(Code.AUTHORIZATION_ERROR)
+                    .userMessage("Ошибка авторизации")
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
         }
     }
 }

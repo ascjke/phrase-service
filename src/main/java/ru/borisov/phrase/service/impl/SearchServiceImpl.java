@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import ru.borisov.phrase.dao.CommonDao;
 import ru.borisov.phrase.dao.SearchDao;
 import ru.borisov.phrase.domain.api.common.TagResp;
+import ru.borisov.phrase.domain.api.search.searchPhrasesByPartWord.SearchPhrasesByPartWordReq;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.PhraseResp;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.SearchPhrasesByTagReq;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.SearchPhrasesByTagResp;
 import ru.borisov.phrase.domain.api.search.searchTags.SearchTagReq;
 import ru.borisov.phrase.domain.api.search.searchTags.SearchTagsResp;
+import ru.borisov.phrase.domain.api.search.searchUsersByPartNickname.SearchUsersByPartNicknameReq;
 import ru.borisov.phrase.domain.response.Response;
 import ru.borisov.phrase.domain.response.SuccessResponse;
 import ru.borisov.phrase.service.SearchService;
@@ -48,7 +50,8 @@ public class SearchServiceImpl implements SearchService {
 
         validationUtils.validationRequest(req);
         commonDao.getUserIdByToken(accessToken);
-        List<ru.borisov.phrase.domain.api.search.searchPhrasesByTag.PhraseResp> phrases = searchDao.searchPhrasesByTag(req);
+
+        List<PhraseResp> phrases = searchDao.searchPhrasesByTag(req);
         for (PhraseResp phraseResp : phrases) {
             List<TagResp> tags = commonDao.getTagsByPhraseId(phraseResp.getPhraseId());
             phraseResp.setTags(tags);
@@ -60,5 +63,32 @@ public class SearchServiceImpl implements SearchService {
                 .build(), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Response> searchPhrasesByPartWord(SearchPhrasesByPartWordReq req, String accessToken) {
 
+        validationUtils.validationRequest(req);
+        commonDao.getUserIdByToken(accessToken);
+
+        List<PhraseResp> phrases = searchDao.searchPhrasesByPartWord(req);
+        for (PhraseResp phraseResp : phrases) {
+            List<TagResp> tags = commonDao.getTagsByPhraseId(phraseResp.getPhraseId());
+            phraseResp.setTags(tags);
+        }
+        return new ResponseEntity<>(SuccessResponse.builder()
+                .data(SearchPhrasesByTagResp.builder()
+                        .phrases(phrases)
+                        .build())
+                .build(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Response> searchUsersByPartNickname(SearchUsersByPartNicknameReq req, String accessToken) {
+
+        validationUtils.validationRequest(req);
+        commonDao.getUserIdByToken(accessToken);
+
+        return new ResponseEntity<>(SuccessResponse.builder()
+                .data(searchDao.searchUsersByPartNickname(req.getPartNickname()))
+                .build(), HttpStatus.OK);
+    }
 }

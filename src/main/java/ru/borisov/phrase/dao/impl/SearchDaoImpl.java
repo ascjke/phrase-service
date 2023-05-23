@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.borisov.phrase.dao.SearchDao;
 import ru.borisov.phrase.domain.api.common.TagResp;
 import ru.borisov.phrase.domain.api.common.TagRespRowMapper;
+import ru.borisov.phrase.domain.api.common.UserResp;
+import ru.borisov.phrase.domain.api.common.UserRespRowMapper;
+import ru.borisov.phrase.domain.api.search.searchPhrasesByPartWord.SearchPhrasesByPartWordReq;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.PhraseResp;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.PhraseRespRowMapper;
 import ru.borisov.phrase.domain.api.search.searchPhrasesByTag.SearchPhrasesByTagReq;
@@ -66,6 +69,33 @@ public class SearchDaoImpl extends JdbcDaoSupport implements SearchDao {
                 "         JOIN user u on phrase.user_id = u.id " +
                 "WHERE phrase.id IN (SELECT phrase_id FROM phrase_tag WHERE tag_id = ?) " +
                 "ORDER BY " + req.getSort().getValue() + ";", new PhraseRespRowMapper(), req.getTagId());
+    }
+
+    @Override
+    public List<PhraseResp> searchPhrasesByPartWord(SearchPhrasesByPartWordReq req) {
+
+        return jdbcTemplate.query("SELECT phrase.id AS phrase_id, u.id AS user_id, u.nickname, phrase.text, phrase.time_insert " +
+                "FROM phrase " +
+                "         JOIN user u on phrase.user_id = u.id " +
+                "WHERE phrase.text LIKE CONCAT('%', LOWER(?), '%') " +
+                "ORDER BY " + req.getSort().getValue() + ";", new PhraseRespRowMapper(), req.getPartWord());
+    }
+
+    @Override
+    public List<UserResp> searchUsersByPartNickname(String partNickname) {
+
+        return jdbcTemplate.query("SELECT id, nickname " +
+                        "FROM (" +
+                        "         SELECT id, nickname " +
+                        "         FROM user " +
+                        "         WHERE nickname LIKE CONCAT(?, '%')) t1 " +
+                        "UNION " +
+                        "SELECT id, nickname " +
+                        "FROM (" +
+                        "         SELECT id, nickname " +
+                        "         FROM user " +
+                        "         WHERE nickname LIKE CONCAT('%', ?, '%')) t2;"
+                , new UserRespRowMapper(), partNickname, partNickname);
     }
 }
 

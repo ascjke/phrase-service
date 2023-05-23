@@ -15,20 +15,10 @@ import ru.borisov.phrase.service.UserService;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("phrase-service-public/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
-
-
-
-    @GetMapping("/hello")
-    public String hello() {
-        String hello = "Hello, phrase-service! Version: 1.0.0";
-        log.info(hello);
-        return hello;
-    }
-
 
 
     @GetMapping("/getMyPhrases")
@@ -41,16 +31,16 @@ public class UserController {
     }
 
 
-
     @PostMapping("/publicPhrase")
-    public ResponseEntity<Response> publicPhrase(@RequestHeader final String accessToken, @RequestBody final PublicPhraseReq req) {
+    public ResponseEntity<Response> publicPhrase(
+            @RequestHeader final String accessToken,
+            @RequestBody final PublicPhraseReq req) {
 
         log.info("START endpoint publicPhrase, accessToken: {}, request: {}", accessToken, req);
         ResponseEntity<Response> resp = userService.publicPhrase(req, accessToken);
         log.info("END endpoint publicPhrase, response: {}", resp);
         return resp;
     }
-
 
 
     @PostMapping("/login")
@@ -61,7 +51,6 @@ public class UserController {
         log.info("END endpoint login, response: {}", resp);
         return resp;
     }
-
 
 
     @PostMapping("/registration")

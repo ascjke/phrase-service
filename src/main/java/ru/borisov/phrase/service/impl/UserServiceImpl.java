@@ -2,6 +2,7 @@ package ru.borisov.phrase.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private final EncryptUtils encryptUtils;
     private final UserDao userDao;
     private final CommonDao commonDao;
-
+    private final ModelMapper mapper;
 
     @Override
     public ResponseEntity<Response> getMyPhrases(String accessToken) {
@@ -49,13 +50,15 @@ public class UserServiceImpl implements UserService {
         List<PhraseResp> phraseRespList = new ArrayList<>();
         for (Phrase phrase : phraseList) {
             List<TagResp> tags = commonDao.getTagsByPhraseId(phrase.getId());
-            phraseRespList.add(PhraseResp.builder()
-                    .phraseId(phrase.getId())
-                    .text(phrase.getText())
-                    .timeInsert(phrase.getTimeInsert())
-                    .tags(tags).build());
+            PhraseResp phraseResp = mapper.map(phrase, PhraseResp.class);
+            phraseResp.setTags(tags);
+            phraseRespList.add(phraseResp);
         }
-        return new ResponseEntity<>(SuccessResponse.builder().data(GetMyPhrasesResp.builder().phrases(phraseRespList).build()).build(), HttpStatus.OK);
+        return new ResponseEntity<>(SuccessResponse.builder()
+                .data(GetMyPhrasesResp.builder()
+                        .phrases(phraseRespList)
+                        .build())
+                .build(), HttpStatus.OK);
     }
 
 

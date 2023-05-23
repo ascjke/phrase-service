@@ -18,4 +18,9 @@ public class PhraseResp {
     private String text;
     private String timeInsert;
     private List<TagResp> tags;
+
+//    private long id; запишется STANDARD
+//    private long userId;
+//    private String text; запишется STRICT
+//    private String timeInsert; запишется STRICT
 }
